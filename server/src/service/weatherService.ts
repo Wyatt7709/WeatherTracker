@@ -1,31 +1,51 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import fs from 'node:fs/promises'
+import {v4} from 'uuid'
 
-// TODO: Define an interface for the Coordinates object
 
-// TODO: Define a class for the Weather object
+class City {
+  name: string;
+  id: string;
 
-// TODO: Complete the WeatherService class
-class WeatherService {
-  // TODO: Define the baseURL, API key, and city name properties
-  // TODO: Create fetchLocationData method
-  // private async fetchLocationData(query: string) {}
-  // TODO: Create destructureLocationData method
-  // private destructureLocationData(locationData: Coordinates): Coordinates {}
-  // TODO: Create buildGeocodeQuery method
-  // private buildGeocodeQuery(): string {}
-  // TODO: Create buildWeatherQuery method
-  // private buildWeatherQuery(coordinates: Coordinates): string {}
-  // TODO: Create fetchAndDestructureLocationData method
-  // private async fetchAndDestructureLocationData() {}
-  // TODO: Create fetchWeatherData method
-  // private async fetchWeatherData(coordinates: Coordinates) {}
-  // TODO: Build parseCurrentWeather method
-  // private parseCurrentWeather(response: any) {}
-  // TODO: Complete buildForecastArray method
-  // private buildForecastArray(currentWeather: Weather, weatherData: any[]) {}
-  // TODO: Complete getWeatherForCity method
-  // async getWeatherForCity(city: string) {}
+  constructor(name: string, id: string) {
+    this.name = name;
+    this.id = id;
+  }
 }
 
-export default new WeatherService();
+class HistoryService {  //help from ian
+
+  private async read() {
+    const data = await fs.readFile('./db/db.json', {encoding: 'utf8'})
+    return JSON.parse(data) || [];
+
+  }
+
+  private async write(cities: City[]) {
+    return await fs.writeFile('./db/db.json', JSON.stringify(cities));
+  }
+ 
+  async getCities() {
+    return await this.read() || [];
+  }
+
+  async addCity(city: string) {
+    const toUpdate = await this.getCities();
+    console.log(toUpdate);
+    const newCity = {
+      name: city,
+      id: v4(),
+    }
+    toUpdate.push(newCity);
+    console.log('cities: ', toUpdate)
+    this.write(toUpdate);
+  }
+  // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
+  async removeCity(id: string) {
+    const toUpdate = await this.getCities();
+    const cities = JSON.parse(toUpdate as string);
+    const updatedCities = cities.filter((city: City) => city.id !== id);
+    this.write(updatedCities);
+  }
+}
+
+export default new HistoryService();
