@@ -12,7 +12,7 @@ class City {
   }
 }
 
-class HistoryService {  //help from ian
+class HistoryService {  
 
   private async read() {
     const data = await fs.readFile('./db/db.json', {encoding: 'utf8'})
@@ -39,7 +39,7 @@ class HistoryService {  //help from ian
     console.log('cities: ', toUpdate)
     this.write(toUpdate);
   }
-  // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
+  
   async removeCity(id: string) {
     const toUpdate = await this.getCities();
     const cities = JSON.parse(toUpdate as string);
