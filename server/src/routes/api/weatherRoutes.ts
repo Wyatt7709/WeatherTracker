@@ -1,19 +1,50 @@
 import { Router, type Request, type Response } from 'express';
+import weatherService from '../../service/weatherService.js';
+import historyService from '../../service/historyService.js';
 const router = Router();
 
-// import HistoryService from '../../service/historyService.js';
-// import WeatherService from '../../service/weatherService.js';
-
 // TODO: POST Request with city name to retrieve weather data
-router.post('/', (req: Request, res: Response) => {
-  // TODO: GET weather data from city name
-  // TODO: save city to search history
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    console.log('Received city:', req.body.cityName);
+    const currentWeather  = await weatherService.getWeatherForCity(req.body.cityName);
+    await historyService.addCity(req.body.cityName);
+    res.status(200).json(currentWeather); 
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'An unknown error occurred' });
+    }
+  }
 });
 
 // TODO: GET search history
-router.get('/history', async (req: Request, res: Response) => {});
+router.get('/history', async (req: Request, res: Response) => {
+  try {
+    const cities = await historyService.getCities();
+    res.status(200).json(cities);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'An unknown error occurred' });
+    }
+  }
+});
 
-// * BONUS TODO: DELETE city from search history
-router.delete('/history/:id', async (req: Request, res: Response) => {});
+router.delete('/history/:id', async (req: Request, res: Response) => {
+  try {
+    await historyService.removeCity(req.params.id);
+    res.status(200).json({ message: 'City removed from history' });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'An unknown error occurred' });
+    }
+  }
+});
 
 export default router;
