@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import { promises as fs }from 'node:fs/promises'
 import {v4} from 'uuid'
 
 
@@ -9,7 +9,7 @@ class City {
   constructor(name: string, id: string) {
     this.name = name;
     this.id = id;
-  }
+  } 
 }
 
 class HistoryService {
