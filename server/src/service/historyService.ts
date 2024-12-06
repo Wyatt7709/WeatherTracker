@@ -1,4 +1,4 @@
-import { promises as fs }from 'node:fs/promises'
+import { promises as fs }from 'fs'
 import {v4} from 'uuid'
 
 
