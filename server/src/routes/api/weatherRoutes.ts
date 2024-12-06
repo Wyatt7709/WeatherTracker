@@ -6,8 +6,8 @@ const router = Router();
 // TODO: POST Request with city name to retrieve weather data
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const weather  = await WeatherService.getWeatherForCity(req.body.cityName);
-    await HistoryService.addCity(req.body.cityName);
+    const weather  = await weatherService.getWeatherForCity(req.body.cityName);
+    await historyService.addCity(req.body.cityName);
     return res.status(200).json(weather);
   } catch (error) {
     console.log(error);
@@ -19,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
 // TODO: GET search history
 router.get('/history', async (_req: Request, res: Response) => {
   try {
-    const history = await HistoryService.getCities();
+    const history = await historyService.getCities();
     return res.status(200).json(history);
   } catch (error) {
     console.log(error);
@@ -28,8 +28,8 @@ router.get('/history', async (_req: Request, res: Response) => {
 });
 
 router.delete('/history/:id', async (req: Request, res: Response) => {
-  onst cityID = req.params.id;
-  await HistoryService.removeCity(cityID);
+  const cityID = req.params.id;
+  await historyService.removeCity(cityID);
   res.json('History updated.');
 });
 

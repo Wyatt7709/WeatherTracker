@@ -58,13 +58,13 @@ private destructureLocationData(locationData: Coordinates[]): Coordinates {
   return { lat, lon };
 }
 
-  private buildGeocodeQuery(query: string): Promise<string> { 
-    const geoQuery = `${this.baseURL}/geo/1.0/direct?q=${query}&limit=5&appid=${this.apiKey}`;
+  private buildGeocodeQuery(query: string): string { 
+    const geoQuery = `${this.baseURL}/geo/1.0/direct?q=${query}&limit=5&appid=${this.APIkey}`;
     return geoQuery;
   }
 
   private buildWeatherQuery(coordinates: Coordinates): string {
-    const weatherQuery = `${this.baseURL}/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.apiKey}&units=imperial`;
+    const weatherQuery = `${this.baseURL}/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.APIkey}&units=imperial`;
     return weatherQuery;
   }
 
@@ -94,7 +94,7 @@ private destructureLocationData(locationData: Coordinates[]): Coordinates {
     return forecast;
   }
 
-  async getWeatherForCity(city: string): Promise<Weather> {
+  async getWeatherForCity(city: string): Promise<Weather[]> {
     this.cityName = city;
     const coordinates = await this.fetchAndDestructureLocationData();
     if (!coordinates) {
@@ -102,12 +102,12 @@ private destructureLocationData(locationData: Coordinates[]): Coordinates {
     }
 
     const weatherData = await this.fetchWeatherData(coordinates);
-    if (!weather) {
+    if (!weatherData) {
       throw new Error('Failed to fetch weather data');
     }
     console.log(weatherData);
 
-    const cityForest = this.buildForestArray(weather.list);
+    const cityForest = this.buildForestArray(weatherData.list);
 
 
     return cityForest;
